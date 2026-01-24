@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microslop Service Status</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .status-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans">
+
+    <header class="border-b border-gray-800 p-6 bg-gray-900 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-tight text-blue-400">MICROSLOP<span class="text-white">STATUS</span></h1>
+            <div class="flex items-center space-x-2">
+                <span class="relative flex h-3 w-3">
+                    <span class="status-pulse absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-orange-600"></span>
+                </span>
+                <span class="text-sm font-medium text-orange-400">Current State: Pure Slop</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-6 space-y-8">
+        
+        <div class="bg-orange-900/20 border border-orange-500/50 rounded-xl p-8 text-center">
+            <h2 class="text-3xl font-bold text-orange-400 mb-2">Partial Infrastructure Meltdown</h2>
+            <p class="text-gray-400 italic">"We're aware that some users (all of them) are experiencing issues (nothing works)."</p>
+        </div>
+
+        <section>
+            <h3 class="text-xl font-semibold mb-4 text-gray-400">Global Services</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-gray-800 p-4 rounded-lg flex justify-between items-center border border-gray-700">
+                    <span>Teams (The Sound of Silence)</span>
+                    <span class="text-red-500 font-mono text-sm uppercase">Crashed</span>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg flex justify-between items-center border border-gray-700">
+                    <span>Outlook (Send/Receive... eventually)</span>
+                    <span class="text-orange-500 font-mono text-sm uppercase">Degraded</span>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg flex justify-between items-center border border-gray-700">
+                    <span>Azure (The Infinite Loading Spinner)</span>
+                    <span class="text-red-500 font-mono text-sm uppercase">On Fire</span>
+                </div>
+                <div class="bg-gray-800 p-4 rounded-lg flex justify-between items-center border border-gray-700">
+                    <span>Licensing (Billing Always Works™)</span>
+                    <span class="text-green-500 font-mono text-sm uppercase">Operational</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-blue-600/10 border border-blue-500/30 rounded-lg p-6 flex flex-col items-center">
+            <p class="mb-4 text-blue-200 font-medium text-center">Are your users currently yelling at you?</p>
+            <button onclick="alert('Report received. We won\'t look at it, but it might make you feel better.')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-full transition duration-200">
+                YES, IT'S BROKEN
+            </button>
+        </section>
+
+        <section class="space-y-4">
+            <h3 class="text-xl font-semibold text-gray-400">Past Incidents</h3>
+            <div class="border-l-2 border-gray-700 ml-2 pl-6 space-y-6">
+                <div class="relative">
+                    <div class="absolute -left-[31px] top-1 bg-gray-900 border-2 border-gray-700 rounded-full h-4 w-4"></div>
+                    <p class="text-sm text-gray-500">January 24, 2026</p>
+                    <h4 class="font-bold text-orange-400">DNS Config Oopsie</h4>
+                    <p class="text-gray-400 text-sm mt-1">We tried to update a record and accidentally deleted the concept of the internet for the EMEA region. Investigations are ongoing while we find the intern responsible.</p>
+                </div>
+                <div class="relative">
+                    <div class="absolute -left-[31px] top-1 bg-gray-900 border-2 border-gray-700 rounded-full h-4 w-4"></div>
+                    <p class="text-sm text-gray-500">January 20, 2026</p>
+                    <h4 class="font-bold text-green-400">Brief Period of Competence</h4>
+                    <p class="text-gray-400 text-sm mt-1">For approximately 14 minutes, all services were operational. We apologize for the confusion this may have caused your IT department.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-4xl mx-auto p-12 text-center text-gray-600 text-xs">
+        <p>Microslop is not affiliated with any actual software companies that might have similar names. We just document the slop.</p>
+    </footer>
+
+</body>
+</html>
