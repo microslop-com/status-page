@@ -240,7 +240,7 @@ const fadeInUp = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" },
+    transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" as const },
   }),
 };
 
@@ -385,7 +385,7 @@ function Header({
   const oc = OVERALL_CONFIG[overallStatus];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
+    <header className="fixed top-0 right-0 left-0 z-[60] border-b border-border/40 bg-background/80 backdrop-blur-xl pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 sm:py-3 lg:px-8">
         <button
           onClick={() => scrollTo("#overview")}
@@ -441,7 +441,7 @@ function Header({
 
         {/* Mobile toggle */}
         <button
-          className="flex h-11 w-11 items-center justify-center rounded-lg md:hidden"
+          className="flex h-12 w-12 -mr-1 items-center justify-center rounded-lg active:bg-accent md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -460,14 +460,15 @@ function Header({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="overflow-hidden border-t border-border/40 md:hidden"
           >
-            <nav className="flex flex-col gap-1 px-4 py-3 pb-4">
+            <nav className="flex flex-col gap-1 px-4 py-3 pb-6">
               {links.map((link) => (
                 <button
                   key={link.href}
                   onClick={() => scrollTo(link.href)}
-                  className="flex h-12 items-center rounded-lg px-4 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  className="flex h-12 items-center rounded-lg px-4 text-left text-sm font-medium text-muted-foreground transition-colors active:bg-accent active:text-foreground md:hidden"
                 >
                   {link.label}
                 </button>
@@ -476,7 +477,7 @@ function Header({
                 href="https://microslop.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-12 items-center gap-2 rounded-lg px-4 text-sm font-semibold text-muted-foreground transition-colors hover:bg-accent"
+                className="flex h-12 items-center gap-2 rounded-lg px-4 text-sm font-semibold text-muted-foreground transition-colors active:bg-accent md:hidden"
               >
                 <HomeIcon className="h-3.5 w-3.5" />
                 Main Site
@@ -1371,6 +1372,8 @@ export default function StatusPage() {
   return (
     <div className="min-h-screen">
       <Header overallStatus={overallStatus} isAdmin={isAdmin} />
+      {/* Spacer for fixed header */}
+      <div className="h-[52px] sm:h-[56px]" />
       <HeroBanner
         overallStatus={overallStatus}
         rtt={rtt}
@@ -1428,6 +1431,8 @@ export default function StatusPage() {
       />
       <CommunitySection />
       <Footer lastChecked={lastChecked} />
+      {/* Spacer for mobile bottom nav */}
+      <div className="h-16 md:hidden" />
       <ScrollToTop />
       <MobileBottomNav />
     </div>
