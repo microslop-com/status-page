@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Status Page to GitHub Pages
 
 on:
   push:
@@ -21,16 +21,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: "20"
+          cache: "bun"
+
+      - name: Setup Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install --frozen-lockfile || bun install
 
-      - name: Build
+      - name: Build static site
         run: bun run build
+
+      - name: Verify build output
+        run: |
+          echo "Checking build output..."
+          ls -la out/
+          test -f out/index.html || (echo "ERROR: index.html not found in out/" && exit 1)
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

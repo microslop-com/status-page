@@ -1,34 +1,65 @@
-# 📡 Microslop Status
-**Real-time tracking for when the "Cloud" becomes "Slop."**
+# MICROSLOP STATUS — Infrastructure Slop Monitor
 
-[![Status Page](https://img.shields.io/badge/Live-Status_Page-blue?style=for-the-badge)](https://status.microslop.com)
+> Real-time monitoring of Microsoft infrastructure slop. Track outages, degraded services, and the eternal loading spinner.
 
-## 📖 Overview
-`status.microslop.com` is a community-driven, automated status dashboard designed for sysadmins who are tired of official dashboards claiming "Everything is Nominal" while their entire tenant is on fire.
+## Live Site
 
-This page performs automated health checks against public Microsoft endpoints and aggregates community signals (Reddit, X, Downdetector) to provide a "Slop-O-Meter" reading.
+**[status.microslop.com](https://status.microslop.com)**
 
-## 🛠 Features
-* **Automated Health Checks:** Pings O365 health endpoints every 30 seconds.
-* **Zero-Gaslighting UI:** If it's broken, the site turns red. No corporate jargon.
-* **Community Smoke Signals:** Quick links to where the *real* troubleshooting happens (r/sysadmin).
-* **Anti-Spam Contact:** Built-in obfuscated contact for reporting new outages.
+## How It Works
 
-## 🚀 How it Works
-The dashboard uses a client-side JavaScript engine to verify connectivity:
-1.  **Ping:** Attempts a `fetch()` to `outlook.office365.com/owa/healthcheck.htm`.
-2.  **Latency Check:** If response > 2000ms, status moves to **Degraded**.
-3.  **Failure Check:** If the fetch fails entirely, status moves to **MAXIMUM SLOP**.
+This is a **static site** (Next.js with `output: "export"`) deployed to GitHub Pages via GitHub Actions.
 
-## 🤝 Contributing
-Found a better way to detect an outage? Want to add a "Days Since Last MFA Meltdown" counter? 
-1. Fork the repo.
-2. Make your snarky (but functional) changes.
-3. Submit a Pull Request.
+- Pings **8 real Microsoft service endpoints** directly from your browser every 30 seconds
+- Measures **round-trip time (RTT)** per service with automatic status classification
+- No backend required — all health checks run client-side
+- Admin mode via `Ctrl+Shift+A` to manage incidents and override statuses
 
-## 📬 Contact
-Got a tip or a screenshot of a funny error message? 
-Reach out at: **info@microslop.com**
+### Status Thresholds
 
----
-*Disclaimer: Microslop is a satirical project. We are not affiliated with Microsoft, though we are frequently affected by them.*
+| RTT | Status | Color |
+|-----|--------|-------|
+| < 1500ms | NOMINAL | Green |
+| 1500–3000ms | DEGRADED | Amber |
+| > 3000ms / unreachable | CRASHED | Red |
+
+### Monitored Services
+
+- Microsoft Teams
+- Outlook
+- Azure Portal
+- OneDrive
+- Copilot AI
+- GitHub
+- Windows Update
+- Billing Systems (always green — billing never goes down)
+
+## Development
+
+```bash
+# Install
+bun install
+
+# Dev server
+bun dev
+
+# Build static site
+bun run build
+
+# Preview build
+cd out && bunx serve .
+```
+
+## Deployment
+
+This repo uses **GitHub Actions** to build and deploy automatically on every push to `main`.
+
+> **Important**: In your GitHub repo settings under **Settings → Pages → Source**, select **"GitHub Actions"** (not "Deploy from a branch"). The workflow handles building and deploying the static site.
+
+## Tech Stack
+
+- Next.js 16 (static export)
+- Tailwind CSS 4
+- shadcn/ui
+- Framer Motion
+- PWA-ready (manifest + service worker)
