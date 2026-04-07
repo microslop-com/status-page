@@ -70,6 +70,19 @@ interface Incident {
   description: string;
 }
 
+const SECTION_SCROLL_GAP = 12;
+
+function scrollToSection(sectionId: string) {
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+
+  const header = document.querySelector<HTMLElement>("[data-site-header]");
+  const headerOffset = header?.getBoundingClientRect().height ?? 0;
+  const top = section.getBoundingClientRect().top + window.scrollY - headerOffset - SECTION_SCROLL_GAP;
+
+  window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
+}
+
 // ============================================================================
 // DEFAULT DATA
 // ============================================================================
@@ -325,11 +338,6 @@ function MobileBottomNav() {
     { id: "timeline", label: "Timeline", icon: History },
   ];
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <nav className="fixed right-0 bottom-0 left-0 z-50 border-t border-border/40 bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
       <div className="flex items-center justify-around px-2 py-1">
@@ -338,7 +346,8 @@ function MobileBottomNav() {
           return (
             <button
               key={tab.id}
-              onClick={() => scrollTo(tab.id)}
+              type="button"
+              onClick={() => scrollToSection(tab.id)}
               className={cn(
                 "flex min-h-[48px] flex-col items-center justify-center gap-0.5 px-3 py-1.5 transition-colors",
                 isActive ? "text-destructive" : "text-muted-foreground"
@@ -367,6 +376,7 @@ function Header({
   isAdmin: boolean;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [pendingSection, setPendingSection] = useState<string | null>(null);
 
   const links = [
     { href: "#overview", label: "Overview" },
@@ -375,20 +385,29 @@ function Header({
     { href: "#timeline", label: "Timeline" },
   ];
 
-  const scrollTo = (href: string) => {
-    setMobileOpen(false);
-    const id = href.replace("#", "");
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+  const handleNavigation = (href: string) => {
+    const sectionId = href.replace("#", "");
+
+    if (mobileOpen) {
+      setPendingSection(sectionId);
+      setMobileOpen(false);
+      return;
+    }
+
+    scrollToSection(sectionId);
   };
 
   const oc = OVERALL_CONFIG[overallStatus];
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-[60] border-b border-border/40 bg-background/80 backdrop-blur-xl pt-[env(safe-area-inset-top)]">
+    <header
+      data-site-header
+      className="fixed top-0 right-0 left-0 z-[60] border-b border-border/40 bg-background/80 backdrop-blur-xl pt-[env(safe-area-inset-top)]"
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2.5 sm:px-6 sm:py-3 lg:px-8">
         <button
-          onClick={() => scrollTo("#overview")}
+          type="button"
+          onClick={() => handleNavigation("#overview")}
           className="flex items-center gap-2 transition-opacity hover:opacity-80"
         >
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive sm:h-9 sm:w-9">
@@ -421,7 +440,8 @@ function Header({
           {links.map((link) => (
             <button
               key={link.href}
-              onClick={() => scrollTo(link.href)}
+              type="button"
+              onClick={() => handleNavigation(link.href)}
               className="rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
               {link.label}
@@ -441,9 +461,11 @@ function Header({
 
         {/* Mobile toggle */}
         <button
+          type="button"
           className="flex h-12 w-12 -mr-1 items-center justify-center rounded-lg active:bg-accent md:hidden"
-          onClick={() => setMobileOpen(!mobileOpen)}
+          onClick={() => setMobileOpen((open) => !open)}
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? (
             <X className="h-6 w-6" />
@@ -454,7 +476,13 @@ function Header({
       </div>
 
       {/* Mobile nav dropdown */}
-      <AnimatePresence>
+      <AnimatePresence
+        onExitComplete={() => {
+          if (!pendingSection) return;
+          scrollToSection(pendingSection);
+          setPendingSection(null);
+        }}
+      >
         {mobileOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
@@ -467,7 +495,8 @@ function Header({
               {links.map((link) => (
                 <button
                   key={link.href}
-                  onClick={() => scrollTo(link.href)}
+                  type="button"
+                  onClick={() => handleNavigation(link.href)}
                   className="flex h-12 items-center rounded-lg px-4 text-left text-sm font-medium text-muted-foreground transition-colors active:bg-accent active:text-foreground md:hidden"
                 >
                   {link.label}
